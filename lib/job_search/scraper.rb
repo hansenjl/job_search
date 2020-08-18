@@ -35,16 +35,14 @@ class JobSearch::Scraper
 
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
-        
-        title = doc.search('.postingtitletext #titletextonly').text
-        date = doc.search('.postingtitletext #titletextonly').text
-        body = doc.search('#postingbody').text.split("\n").join("")
-        location = doc.search('.postingtitletext #titletextonly').text
 
-        # def initialize(title, date = nil, body = nil, location = nil)
-        JobSearch::Job.new(title, date, body, location)
-
-        binding.pry        
+        JobSearch::Job.new(
+            doc.search('.postingtitletext #titletextonly').text.strip, #title
+            doc.search('.date.timeago').children[0].text.strip, #date
+            doc.search('#postingbody').text.split("\n").join("").strip, #body
+            doc.search('.postingtitletext #titletextonly').text.strip #location
+        )   
+        binding.pry
     end
 
     def self.all_links
