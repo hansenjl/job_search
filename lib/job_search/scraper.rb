@@ -39,10 +39,10 @@ class JobSearch::Scraper
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
             doc.search('.date.timeago').children[0].text.strip, #date
+            doc.search('.postingtitletext #titletextonly').text.strip #compensation
+            doc.search('.postingtitletext #titletextonly').text.strip #employement type
             doc.search('#postingbody').text.split("\n").join("").strip, #body
-            doc.search('.postingtitletext #titletextonly').text.strip #location
         )   
-        binding.pry
     end
 
     def self.all_links
