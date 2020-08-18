@@ -60,7 +60,7 @@ class JobSearch::CLI
 
     def create_and_display_all_job_listings
         puts "Which job would you like more information on?".colorize(:green)
-        JobSearch::Scraper.all_job_links.each.with_index(1) do |link|
+        JobSearch::Scraper.all_job_links.each do |link|
             @@jobs_within_category << "#{link}"
         end
 
@@ -75,14 +75,18 @@ class JobSearch::CLI
     def print_job_listings
         @@jobs_to_print = @@jobs_to_print.uniq #remove duplicate job posts
         @@jobs_to_print.each.with_index(1) do |job, i|
-
             puts "#{i}." + "#{job}".colorize(:red)
         end
     end
 
     def user_job_selection
+        input = gets.strip
         @@jobs_within_category.each.with_index(1) do |job, i|
-            JobSearch::Scraper.scrape_job_link(job)
+            if i.to_s == input 
+                puts "You've selected option number #{i}, for #{job}!".colorize(:yellow)
+                sleep(3)
+                JobSearch::Scraper.scrape_job_link(job)
+            end
         end
     end
 end
