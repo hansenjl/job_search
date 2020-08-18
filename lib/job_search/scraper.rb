@@ -36,11 +36,11 @@ class JobSearch::Scraper
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
         input = gets.strip 
-        number, job = @@print_job_listings.split(".")
-        
+        # number, job = @@print_job_listings.split(".")
+
         title = doc.search('.postingtitletext #titletextonly').text
         date = doc.search('.postingtitletext #titletextonly').text
-        body = doc.search('.postingtitletext #titletextonly').text
+        body = doc.search('#postingbody').text.split("\n").join("")
         location = doc.search('.postingtitletext #titletextonly').text
 
         # def initialize(title, date = nil, body = nil, location = nil)

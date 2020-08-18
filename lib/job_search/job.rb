@@ -16,8 +16,15 @@ class JobSearch::Job
         @@all << self 
     end
 
-    def create_jobs
-        #code to create jobs in a specific way
+    def descriptor
+        puts "Job title:        #{self.title}"
+        puts "Job post-date:    #{self.date}"
+        puts "Job location:     #{self.location}"
+        puts "Job Description   #{self.body}"
+    end
+
+    def self.all
+        @@all
     end
 
 end

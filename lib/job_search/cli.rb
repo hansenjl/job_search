@@ -86,3 +86,11 @@ class JobSearch::CLI
         end
     end
 end
+
+# git add . | git commit -m "" | -git push
+# configured environment
+# created classes
+# drafted cli & passed data directly from Scraper class into it 
+
+# TODO:
+# refactor such that data is routing through job class rather than scraper -->  cli
