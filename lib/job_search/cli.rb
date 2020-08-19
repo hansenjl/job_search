@@ -19,7 +19,7 @@ class JobSearch::CLI
         create_and_display_all_job_listings #displays all job links withing specific category, with a corresponding number
         print_job_listings #prints the job listings within a specific category
         user_job_selection #allows user to select which job they want more information on, and will begin scraping it
-        #explore_the_job #code for viewing information about the selected job
+        explore_the_job #code for viewing information about the selected job
         view_another_job_or_category? #allows you to choose to view another job, or another category
     end
 
@@ -89,13 +89,14 @@ class JobSearch::CLI
     end
 
     def explore_the_job
-        #this method will be for interacting with the job object
+        job = JobSearch::Job.all.last
+        job.descriptor
     end
 
     def view_another_job_or_category?
         puts "Would you like to choose another category, or another job?"
         puts "To view another job, enter 'job', otherwise, enter 'category'."
-        puts "put 'exit' to end the program"
+        puts "Type 'exit' to end the program"
         input = gets.strip
         case input
         when 'job'
@@ -106,7 +107,7 @@ class JobSearch::CLI
             puts "Thank you for using the job search CLI application."
         else
             puts "Sorry, that wasn't one of the options mentioned above, please try again."
-            view_another_job_or_category? #recursion to call the program again.
+            view_another_job_or_category?
         end
     end
 end

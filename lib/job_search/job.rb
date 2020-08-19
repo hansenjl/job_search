@@ -19,11 +19,11 @@ class JobSearch::Job
     end
 
     def descriptor
-        puts "Job title:        #{self.title}"
-        puts "Job post-date:    #{self.date}"
-        puts "Job compensation: #{self.compensation}"
-        puts "Employement type: #{self.employment_type}"
-        puts "Job Description:  #{self.body}"
+        puts "Job title:        #{self.title}".colorize(:red)
+        puts "Job post-date:    #{self.date}".colorize(:red)
+        puts "Job compensation: #{self.compensation}".colorize(:green)
+        puts "Employement type: #{self.employment_type}".colorize(:green)
+        puts "Job Description:  #{self.body}".colorize(:blue)
     end
 
     def self.all

@@ -1,3 +1,4 @@
+require 'colorize'
 class JobSearch::Scraper
 
     SITE_TO_SCRAPE = "https://phoenix.craigslist.org/"
@@ -36,15 +37,15 @@ class JobSearch::Scraper
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
 
-        # (title = nil, date = nil, compensation = nil, employment_type = nil, body = nil)
+        # (title, date, compensation, employment_type, body)
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
             doc.search('.date.timeago').children[0].text.strip, #date
-            doc.search('.postingtitletext #titletextonly').text.strip,
-            doc.search('.postingtitletext #titletextonly').text.strip,
-            doc.search('#postingbody').text.split("\n").join("").strip #body
+            doc.search('.attrgroup').text.strip.split(": ")[1],
+            doc.search('.attrgroup').text.strip.split(" ").last,
+            doc.search('#postingbody').text.split("\n").join("").strip.split("  ").last#body
         )   
-        
+        binding.pry
     end
 
     def self.all_links
