@@ -14,8 +14,10 @@ class JobSearch::CLI
         greeting
         which_category? #a message asking which category user wants to choose
         create_and_display_categories #create, AND display the categories
+
         category_selection = gets.strip #gather user input
         user_category_selection(category_selection) #takes user input and returns the corresponding category
+        
         create_and_display_all_job_listings #displays all job links withing specific category, with a corresponding number
         print_job_listings #prints the job listings within a specific category
         user_job_selection #allows user to select which job they want more information on, and will begin scraping it
@@ -41,7 +43,7 @@ class JobSearch::CLI
         categories.collect.with_index(1) do |category, i|
             category = category.attr('href').split("d/").last.split("/").first
             puts "#{i}. #{category}"
-            @@categories_to_display << "#{i}. #{ category}"
+            @@categories_to_display << "#{i}. #{category}"
         end
     end   
 

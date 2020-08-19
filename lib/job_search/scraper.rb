@@ -33,7 +33,7 @@ class JobSearch::Scraper
             @@all_job_links << job_link unless job_link == '#'
         end
     end
-
+    
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
 
@@ -43,9 +43,8 @@ class JobSearch::Scraper
             doc.search('.date.timeago').children[0].text.strip, #date
             doc.search('.attrgroup').text.strip.split(": ")[1],
             doc.search('.attrgroup').text.strip.split(" ").last,
-            doc.search('#postingbody').text.split("\n").join("").strip.split("  ").last#body
+            doc.search('#postingbody').text.split("\n").join("").split("      ").last.strip#body
         )   
-        binding.pry
     end
 
     def self.all_links
