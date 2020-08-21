@@ -33,7 +33,7 @@ class JobSearch::Scraper
             @@all_job_links << job_link unless job_link == '#'
         end
     end
-    
+
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
 
@@ -61,5 +61,12 @@ class JobSearch::Scraper
 
     def self.all_job_links
         @@all_job_links
+    end
+
+    def self.destroy_all
+        @@all_categories.clear
+        @@all_links.clear
+        @@all_jobs.clear
+        @@all_job_links.clear
     end
 end
