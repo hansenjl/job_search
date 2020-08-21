@@ -21,7 +21,7 @@ class JobSearch::CLI
         create_and_display_all_job_listings #displays all job links withing specific category, with a corresponding number
         print_job_listings #prints the job listings within a specific category
         user_job_selection #allows user to select which job they want more information on, and will begin scraping it
-        # explore_the_job #code for viewing information about the selected job
+        explore_the_job #code for viewing information about the selected job
         view_another_job_or_category? #allows you to choose to view another job, or another category 
     end
 
@@ -83,7 +83,7 @@ class JobSearch::CLI
         input = gets.strip
         @@jobs_within_category.each.with_index(1) do |job, i|
             if i.to_s == input 
-                puts "You've selected option number #{i}, for #{job}!".colorize(:yellow)
+                puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
                 sleep(3)
                 JobSearch::Scraper.scrape_job_link(job)
             end
@@ -91,16 +91,33 @@ class JobSearch::CLI
     end
 
     def explore_the_job
-        puts "What information would you like to know about the job you selected?".colorize(:yellow)
-        puts "Enter 'title' for job title."
-        puts "Enter 'details' for job details."
-        puts "Enter 'job type' for the type of employement."
-        input = gets.strip
-
-        if input == 1
-
         job = JobSearch::Job.all.last
-        job.descriptor
+        puts "What information would you like to know about the job you selected?".colorize(:yellow)
+        puts "Enter 'title' or '1' for job title.".colorize(:yellow)
+        puts "Enter 'details' or '2' for job details.".colorize(:yellow)
+        puts "Enter 'job type' or '3' for the type of employement (PT/FT, hourly, etc.).".colorize(:yellow)
+        puts "Enter 'pay' or '4' to get the job's compensation.".colorize(:yellow)
+        puts "Enter 'overall' or '5' if you would like to view all deatails at once.".colorize(:yellow)
+        puts "Enter 'done' if you are finished viewing information about the job.".colorize(:yellow)
+        
+        input = gets.strip
+        if input == '1' || input == 'title'
+            puts "#{job.title}".colorize(:green)
+        elsif input == '2' || input == 'details'
+            puts "#{job.body}".colorize(:green)
+        elsif input == '3' || input == 'job type'
+            puts "#{job.employement_type}".colorize(:green)
+        elsif input == '4' || input == 'pay'
+            puts "#{job.compensation}".colorize(:green)
+        elsif input == '5' || input == 'overall'
+            puts "#{job.descriptor}".colorize(:green)
+        elsif input == 'done'
+            puts "All finished with this job?".colorize(:yellow)
+        else 
+            puts "Sorry, can you select one of the inputs mentioned above?".colorize(:yellow)
+        end
+        sleep(2)
+        explore_the_job unless input == 'done'
     end
 
     def view_another_job_or_category?
