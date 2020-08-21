@@ -84,6 +84,7 @@ class JobSearch::CLI
         @@jobs_within_category.each.with_index(1) do |job, i|
             if i.to_s == input 
                 puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
+                puts "Here is the job link if you'd like to view the job page: " + "#{job}".colorize(:light_blue)
                 sleep(3)
                 JobSearch::Scraper.scrape_job_link(job)
             end
@@ -99,14 +100,14 @@ class JobSearch::CLI
         puts "Enter 'pay' or '4' to get the job's compensation.".colorize(:yellow)
         puts "Enter 'overall' or '5' if you would like to view all deatails at once.".colorize(:yellow)
         puts "Enter 'done' if you are finished viewing information about the job.".colorize(:yellow)
-        
+
         input = gets.strip
         if input == '1' || input == 'title'
             puts "#{job.title}".colorize(:green)
         elsif input == '2' || input == 'details'
             puts "#{job.body}".colorize(:green)
         elsif input == '3' || input == 'job type'
-            puts "#{job.employement_type}".colorize(:green)
+            puts "#{job.employment_type}".colorize(:green)
         elsif input == '4' || input == 'pay'
             puts "#{job.compensation}".colorize(:green)
         elsif input == '5' || input == 'overall'
@@ -141,5 +142,3 @@ class JobSearch::CLI
         JobSearch::Job.destroy_all
     end
 end
-
-# git add . | git commit -m "" | git push

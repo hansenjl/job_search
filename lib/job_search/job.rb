@@ -8,13 +8,12 @@ class JobSearch::Job
     @@all = [] #holds all instances of a job
 
     attr_accessor :title, :date, :compensation, :employment_type, :body, :link
-    def initialize(title = nil, date = nil, compensation = nil, employment_type = nil, body = nil, link = nil)
+    def initialize(title = nil, date = nil, compensation = nil, employment_type = nil, body = nil)
         @title = title
         @date = date
         @compensation = compensation 
         @employment_type = employment_type
         @body = body
-        @link = link
 
         @@all << self 
     end
@@ -25,7 +24,6 @@ class JobSearch::Job
         puts "Job compensation: #{self.compensation}".colorize(:green)
         puts "Employement type: #{self.employment_type}".colorize(:green)
         puts "Job Description:  #{self.body}".colorize(:blue)
-        puts "Want to view the entire job page? Job link: #{self.link}".colorize(:red)
     end
 
     def self.all
