@@ -41,9 +41,9 @@ class JobSearch::Scraper
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
             doc.search('.date.timeago').children[0].text.strip, #date
-            doc.search('.attrgroup').text.strip.split(": ")[1],
-            doc.search('.attrgroup').text.strip.split(" ").last,
-            doc.search('#postingbody').text.split("\n").join("").split("      ").last.strip#body
+            doc.search('.attrgroup').text.split(": ")[1].split("\n").first, #compensation
+            doc.search('.attrgroup').text.strip.split(" ").last, #job type
+            doc.search('#postingbody').text.split("\n").join(" ").gsub("                    QR Code Link to This Post                    ", "").strip
         )   
     end
 

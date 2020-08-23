@@ -5,7 +5,6 @@ require 'colorize'
 require_relative 'version'
 
 class JobSearch::CLI 
-
     @@categories_to_display = [] #holds all created categories with their number
     @@jobs_within_category = []
     @@jobs_to_print = []
@@ -13,8 +12,8 @@ class JobSearch::CLI
     def program_run
         greeting
         which_category? #a message asking which category user wants to choose
+        
         create_and_display_categories #create, AND display the categories
-
         category_selection = gets.strip #gather user input
         user_category_selection(category_selection) #takes user input and returns the corresponding category
 
