@@ -3,8 +3,9 @@ require_relative 'lib/job_search/version'
 Gem::Specification.new do |spec|
   spec.name          = "job_search"
   spec.version       = JobSearch::VERSION
-  spec.authors       = ["ComputerScienceWarrior"]
+  spec.authors       = ["James-Ryan Stampley"]
   spec.email         = ["computersciencewarrior@gmail.com"]
+  spec.license       = "MIT"
 
   spec.summary       = "My First Project"
   spec.description   = "A cool CLI project."

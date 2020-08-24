@@ -36,12 +36,16 @@ class JobSearch::Scraper
 
     def self.scrape_job_link(job_selection)
         doc = Nokogiri::HTML(open(job_selection))
+        
+        unless doc.search('.attrgroup').text.split(": ")[1].nil?
+            pay = doc.search('.attrgroup').text.split(": ")[1].split("\n").first
+        end
 
         # (title, date, compensation, employment_type, body)
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
             doc.search('.date.timeago').children[0].text.strip, #date
-            doc.search('.attrgroup').text.split(": ")[1].split("\n").first, #compensation
+            pay, #compensation
             doc.search('.attrgroup').text.strip.split(" ").last, #job type
             doc.search('#postingbody').text.split("\n").join(" ").gsub("                    QR Code Link to This Post                    ", "").strip
         )   
