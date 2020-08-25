@@ -45,7 +45,6 @@ class JobSearch::CLI
         input = gets.strip
         @@categories_to_display.find.with_index(1) do |selection, i|
             if (1..@@categories_to_display.size).include?(input.to_i)
-                
                 number, job_category = selection.split(".")
 
                 if selection.include?(input)
@@ -54,7 +53,6 @@ class JobSearch::CLI
                     category_link = JobSearch::Scraper.all_links[i - 1] #scrape this link
                     JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
                 end
-
             else
                 puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
                 puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
@@ -85,15 +83,19 @@ class JobSearch::CLI
         end
     end
 
-    #DOES NOT PROPERLY HANDLE USER INPUT - MUST FIX
     def user_job_selection
         input = gets.strip.downcase
-        @@jobs_within_category.each.with_index(1) do |job, i|
-            if i.to_s == input 
-                puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
-                puts "Here is the job link if you'd like to view the job page: " + "#{job}".colorize(:light_blue)
-                sleep(3)
-                JobSearch::Scraper.scrape_job_link(job)
+        @@jobs_within_category.find.with_index(1) do |job, i|
+            if (1..@@jobs_within_category.size).include?(input.to_i)
+                if i.to_s == input 
+                    puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
+                    puts "Here is the job link if you'd like to view the job page: " + "#{job}".colorize(:light_blue)
+                    sleep(3)
+                    JobSearch::Scraper.scrape_job_link(job)
+                end
+            else
+                puts "Sorry, that's not valid input. Please try again.".upcase.colorize(:red)
+                user_job_selection
             end
         end
     end
