@@ -11,10 +11,8 @@ class JobSearch::CLI
 
     def program_run
         greeting
-
         create_and_display_categories #create, AND display the categories
-        category_selection = gets.strip #gather user input
-        user_category_selection(category_selection) #takes user input and returns the corresponding category
+        user_category_selection #takes user input and returns the corresponding category
 
         create_and_display_all_job_listings #displays all job links withing specific category, with a corresponding number
         print_job_listings #prints the job listings within a specific category
@@ -43,15 +41,27 @@ class JobSearch::CLI
         end
     end   
 
-    def user_category_selection(input)
-        @@categories_to_display.each.with_index(0) do |selection, i|
-            number, job_category = selection.split(".")
-            if input == number
-                puts "You've selected the category" + "#{job_category}!".colorize(:red)
-                sleep(2)
-                category_link = JobSearch::Scraper.all_links[i] #scrape this link
-                JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
+    def user_category_selection
+        input = gets.strip
+        @@categories_to_display.find.with_index(1) do |selection, i|
+            if (1..@@categories_to_display.size).include?(input.to_i)
+                
+                number, job_category = selection.split(".")
+
+                if selection.include?(input)
+                    puts "You've selected the category" + "#{job_category}!".colorize(:red)
+                    sleep(2)
+                    category_link = JobSearch::Scraper.all_links[i - 1] #scrape this link
+                    JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
+                end
+
+            else
+                puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
+                puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
+                puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
+                user_category_selection
             end
+
         end
     end
 
@@ -75,8 +85,9 @@ class JobSearch::CLI
         end
     end
 
+    #DOES NOT PROPERLY HANDLE USER INPUT - MUST FIX
     def user_job_selection
-        input = gets.strip
+        input = gets.strip.downcase
         @@jobs_within_category.each.with_index(1) do |job, i|
             if i.to_s == input 
                 puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
@@ -94,10 +105,10 @@ class JobSearch::CLI
         puts "Enter 'details' or '2' for job details.".colorize(:yellow)
         puts "Enter 'job type' or '3' for the type of employement (PT/FT, hourly, etc.).".colorize(:yellow)
         puts "Enter 'pay' or '4' to get the job's compensation.".colorize(:yellow)
-        puts "Enter 'overall' or '5' if you would like to view all deatails at once.".colorize(:yellow)
+        puts "Enter 'overall' or '5' if you would like to view all details at once.".colorize(:yellow)
         puts "Enter 'done' if you are finished viewing information about the job.".colorize(:yellow)
 
-        input = gets.strip
+        input = gets.strip.downcase
         if input == '1' || input == 'title'
             puts "#{job.title}".colorize(:green)
         elsif input == '2' || input == 'details'
@@ -121,7 +132,7 @@ class JobSearch::CLI
         puts "Would you like to make another selection?"
         puts "To continue, enter 'yes'."
         puts "Type 'exit' to end the program"
-        input = gets.strip
+        input = gets.strip.downcase
         if input == 'yes'
             JobSearch::CLI.reset_program
             program_run

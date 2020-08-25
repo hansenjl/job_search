@@ -22,7 +22,7 @@ class JobSearch::Job
         puts "Job title:        #{self.title}".colorize(:red)
         puts "Job post-date:    #{self.date}".colorize(:red)
         puts "Job compensation: #{self.compensation}".colorize(:green)
-        puts "Employement type: #{self.employment_type}".colorize(:green)
+        puts "Employment type: #{self.employment_type}".colorize(:green)
         puts "Job Description:  #{self.body}".colorize(:blue)
     end
 
