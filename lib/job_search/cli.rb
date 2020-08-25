@@ -11,8 +11,7 @@ class JobSearch::CLI
 
     def program_run
         greeting
-        which_category? #a message asking which category user wants to choose
-        
+
         create_and_display_categories #create, AND display the categories
         category_selection = gets.strip #gather user input
         user_category_selection(category_selection) #takes user input and returns the corresponding category
@@ -26,16 +25,14 @@ class JobSearch::CLI
 
     def greeting
         puts "Welcome to the Craigslist Job Search!".colorize(:blue)
+        sleep(2)
         puts "Please choose from a category below:".colorize(:blue)
-        sleep(3)
-    end
-
-    def which_category?
+        sleep(2)
         puts "Which category would you like more information on?".colorize(:yellow)
         puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
         puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
-        sleep(3)
-    end 
+        sleep(4)
+    end
 
     def create_and_display_categories
         categories = JobSearch::Scraper.scrape_site
@@ -47,12 +44,12 @@ class JobSearch::CLI
     end   
 
     def user_category_selection(input)
-        @@categories_to_display.each.with_index(1) do |selection, i|
+        @@categories_to_display.each.with_index(0) do |selection, i|
             number, job_category = selection.split(".")
             if input == number
                 puts "You've selected the category" + "#{job_category}!".colorize(:red)
-                # sleep(3)
-                category_link = JobSearch::Scraper.all_links[i - 1] #scrape this link
+                sleep(2)
+                category_link = JobSearch::Scraper.all_links[i] #scrape this link
                 JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
             end
         end
@@ -114,7 +111,7 @@ class JobSearch::CLI
         elsif input == 'done'
             puts "All finished with this job?".colorize(:yellow)
         else 
-            puts "Sorry, can you select one of the inputs mentioned above?".colorize(:yellow)
+            puts "Please select one of the inputs mentioned above.".upcase.colorize(:red)
         end
         sleep(2)
         explore_the_job unless input == 'done'
@@ -129,7 +126,10 @@ class JobSearch::CLI
             JobSearch::CLI.reset_program
             program_run
         elsif input == 'exit'
-            puts "Thank you, and good luck with your job search!"
+            puts "Thank you, and good luck with your job search!".colorize(:green)
+        else
+            puts "SORRY, BUT ".colorize(:red) + "'#{input}'".colorize(:blue) + " IS NOT A VALID OPTION...TRY AGAIN PLEASE.".colorize(:red)
+            view_another_job_or_category?
         end
     end
 

@@ -41,14 +41,19 @@ class JobSearch::Scraper
             pay = doc.search('.attrgroup').text.split(": ")[1].split("\n").first
         end
 
-        # (title, date, compensation, employment_type, body)
+        #format the date before setting it in job object
+        date = doc.search('.date.timeago').children[0].text.strip
+        year, month, date_time = date.split('-')
+        day, time = date_time.split(" ") 
+        date = "#{month}-#{day}-#{year} at #{time}."
+
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
-            doc.search('.date.timeago').children[0].text.strip, #date
             pay, #compensation
             doc.search('.attrgroup').text.strip.split(" ").last, #job type
-            doc.search('#postingbody').text.split("\n").join(" ").gsub("                    QR Code Link to This Post                    ", "").strip
+            doc.search('#postingbody').text.split("\n").join(" ").gsub("                    QR Code Link to This Post                    ", "").strip#body
         )   
+        JobSearch::Job.all[0].date = date #date
     end
 
     def self.all_links

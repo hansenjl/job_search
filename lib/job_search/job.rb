@@ -8,7 +8,7 @@ class JobSearch::Job
     @@all = [] #holds all instances of a job
 
     attr_accessor :title, :date, :compensation, :employment_type, :body, :link
-    def initialize(title = nil, date = nil, compensation = nil, employment_type = nil, body = nil)
+    def initialize(title = nil, compensation = nil, employment_type = nil, body = nil)
         @title = title
         @date = date
         @compensation = compensation 
