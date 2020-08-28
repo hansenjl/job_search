@@ -5,27 +5,26 @@ require 'colorize'
 require_relative 'version'
 
 class JobSearch::CLI 
-    @@categories_to_display = [] #holds all created categories with their number
+    @@categories_to_display = [] 
     @@jobs_within_category = []
     @@jobs_to_print = []
 
     def program_run
         greeting
-        create_and_display_categories #create, AND display the categories
-        user_category_selection #takes user input and returns the corresponding category
-
-        create_and_display_all_job_listings #displays all job links withing specific category, with a corresponding number
-        print_job_listings #prints the job listings within a specific category
-        user_job_selection #allows user to select which job they want more information on, and will begin scraping it
-        explore_the_job #code for viewing information about the selected job
-        view_another_job_or_category? #allows you to choose to view another job, or another category 
+        create_and_display_categories
+        user_category_selection 
+        create_and_display_all_job_listings
+        print_job_listings
+        user_job_selection 
+        explore_the_job 
+        view_another_job_or_category?
     end
 
     def greeting
         puts "Welcome to the Craigslist Job Search!".colorize(:blue)
-        sleep(2)
         puts "Please choose from a category below:".colorize(:blue)
         sleep(2)
+
         puts "Which category would you like more information on?".colorize(:yellow)
         puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
         puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
@@ -33,9 +32,11 @@ class JobSearch::CLI
     end
 
     def create_and_display_categories
-        categories = JobSearch::Scraper.scrape_site
+        categories = JobSearch::Scraper.scrape_site #store site data in categories variable
+
         categories.collect.with_index(1) do |category, i|
             category = category.attr('href').split("d/").last.split("/").first
+
             puts "#{i}. #{category}"
             @@categories_to_display << "#{i}. #{category}"
         end
@@ -43,7 +44,9 @@ class JobSearch::CLI
 
     def user_category_selection
         input = gets.strip
+
         @@categories_to_display.find.with_index(1) do |selection, i|
+            
             if (1..@@categories_to_display.size).include?(input.to_i)
                 number, job_category = selection.split(".")
 
@@ -53,34 +56,30 @@ class JobSearch::CLI
                     category_link = JobSearch::Scraper.all_links[i - 1] #scrape this link
                     JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
                 end
+
             else
                 puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
                 puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
                 puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
+
                 user_category_selection
             end
-
         end
     end
 
     def create_and_display_all_job_listings
         puts "Which job would you like more information on?".colorize(:green)
-        JobSearch::Scraper.all_job_links.each do |link|
-            @@jobs_within_category << "#{link}"
-        end
+
+        JobSearch::Scraper.all_job_links.each { |link| @@jobs_within_category << "#{link}" }
 
         puts "Available jobs in this category:".colorize(:blue)
         puts "--------------------------------"
-        @@jobs_within_category.each do |j|
-            #grabs the last part of the link to create a job
-            @@jobs_to_print << j.split("/d/").last.split('/').first
-        end
+
+        @@jobs_within_category.each { |j| @@jobs_to_print << j.split("/d/").last.split('/').first }
     end
 
     def print_job_listings
-        @@jobs_to_print.each.with_index(1) do |job, i|
-            puts "#{i}." + "#{job}".colorize(:red)
-        end
+        @@jobs_to_print.each.with_index(1) { |job, i| puts "#{i}." + "#{job}".colorize(:red) }
     end
 
     def user_job_selection
@@ -134,12 +133,14 @@ class JobSearch::CLI
         puts "Would you like to make another selection?"
         puts "To continue, enter 'yes'."
         puts "Type 'exit' to end the program"
+
         input = gets.strip.downcase
+        
         if input == 'yes'
             JobSearch::CLI.reset_program
-            program_run
+            program_run #start program again
         elsif input == 'exit'
-            puts "Thank you, and good luck with your job search!".colorize(:green)
+            puts "Thank you, and good luck with your job search!".colorize(:green) #end program
         else
             puts "SORRY, BUT ".colorize(:red) + "'#{input}'".colorize(:blue) + " IS NOT A VALID OPTION...TRY AGAIN PLEASE.".colorize(:red)
             view_another_job_or_category?

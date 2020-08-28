@@ -1,6 +1,5 @@
 require 'colorize'
 class JobSearch::Scraper
-
     SITE_TO_SCRAPE = "https://phoenix.craigslist.org/"
     @@all_categories = []
     @@all_links = []
@@ -28,6 +27,7 @@ class JobSearch::Scraper
 
     def self.scrape_category_for_job_links(category_link)
         doc = Nokogiri::HTML(open(category_link))
+
         doc.search('.rows .result-info a').each do |row|
             job_link = row.attr('href')
             @@all_job_links << job_link unless job_link == '#'
