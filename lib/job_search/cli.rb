@@ -53,7 +53,7 @@ class JobSearch::CLI
                 if selection.include?(input)
                     puts "You've selected the category" + "#{job_category}!".colorize(:red)
                     sleep(2)
-                    category_link = JobSearch::Scraper.all_links[i - 1] #scrape this link
+                    category_link = JobSearch::Job.all_links[i - 1] #scrape this link
                     JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
                 end
 
@@ -70,7 +70,7 @@ class JobSearch::CLI
     def create_and_display_all_job_listings
         puts "Which job would you like more information on?".colorize(:green)
 
-        JobSearch::Scraper.all_job_links.each { |link| @@jobs_within_category << "#{link}" }
+        JobSearch::Job.all_job_links.each { |link| @@jobs_within_category << "#{link}" }
 
         puts "Available jobs in this category:".colorize(:blue)
         puts "--------------------------------"
@@ -84,6 +84,7 @@ class JobSearch::CLI
 
     def user_job_selection
         input = gets.strip.downcase
+        
         @@jobs_within_category.find.with_index(1) do |job, i|
             if (1..@@jobs_within_category.size).include?(input.to_i)
                 if i.to_s == input 
@@ -151,7 +152,6 @@ class JobSearch::CLI
         @@categories_to_display = [] 
         @@jobs_within_category = []
         @@jobs_to_print = []
-        JobSearch::Scraper.destroy_all
         JobSearch::Job.destroy_all
     end
 end
