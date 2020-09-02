@@ -33,22 +33,11 @@ class JobSearch::CLI
 
     def create_and_display_categories
         categories = JobSearch::Scraper.scrape_site #store site data in categories variable
-
-        # categories.collect.with_index(1) do |category, i|
-        #     category = category.attr('href').split("d/").last.split("/").first
-
-        #     puts "#{i}. #{category}"
-        #     @@categories_to_display << "#{i}. #{category}"
-        # end
-
-        JobSearch::Job.all_categories.each do |category|
-            puts category
-        end
+        JobSearch::Category.all.each.with_index(1) {|category, index| puts "#{index}. #{category.category_name}"}
     end   
 
     def user_category_selection
         input = gets.strip
-
         JobSearch::Job.all_categories.find.with_index(1) do |selection, i|
             
             if (1..@@categories_to_display.size).include?(input.to_i)

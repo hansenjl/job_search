@@ -11,13 +11,14 @@ class JobSearch::Job
     @@all_jobs = []
     @@all_job_links = []
 
-    attr_accessor :title, :date, :compensation, :employment_type, :body, :link
+    attr_accessor :title, :date, :compensation, :employment_type, :body, :link, :category
     def initialize(title = nil, compensation = nil, employment_type = nil, body = nil)
         @title = title
         @date = date
         @compensation = compensation 
         @employment_type = employment_type
         @body = body
+        @category = category
 
         @@all << self 
     end

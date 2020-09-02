@@ -3,6 +3,21 @@ class JobSearch::Scraper
     SITE_TO_SCRAPE = "https://phoenix.craigslist.org/"
 
     # create categories for user to select from
+    # def self.scrape_site
+    #     uri = SITE_TO_SCRAPE
+    #     doc = Nokogiri::HTML(open(uri))
+
+    #     #create categories for user to select from
+    #     doc.search('.jobs .cats a').each.with_index(1) do |link, index|
+    #         category = link.attr('href').split("d/").last.split("/").first
+    #         JobSearch::Job.all_categories << "#{index}. " + "#{category}".colorize(:green)
+            
+    #         link = link.attr('href')
+    #         link[0] = "" #remove
+    #         JobSearch::Job.all_links << uri + link 
+    #     end
+    # end
+
     def self.scrape_site
         uri = SITE_TO_SCRAPE
         doc = Nokogiri::HTML(open(uri))
@@ -10,11 +25,12 @@ class JobSearch::Scraper
         #create categories for user to select from
         doc.search('.jobs .cats a').each.with_index(1) do |link, index|
             category = link.attr('href').split("d/").last.split("/").first
-            JobSearch::Job.all_categories << "#{index}. " + "#{category}".colorize(:green)
             
             link = link.attr('href')
             link[0] = "" #remove
-            JobSearch::Job.all_links << uri + link 
+            link = uri + link
+
+            JobSearch::Category.new(category, link)
         end
     end
 
