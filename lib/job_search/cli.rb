@@ -38,25 +38,30 @@ class JobSearch::CLI
 
     def user_category_selection
         input = gets.strip
-        JobSearch::Job.all_categories.find.with_index(1) do |selection, i|
+        # binding.pry
+        JobSearch::Category.all.find.with_index(1) do |selection, i|
+            JobSearch::Scraper.scrape_category_for_job_links(JobSearch::Category.all[input.to_i + 1].link) #scrape this
             
-            if (1..@@categories_to_display.size).include?(input.to_i)
-                number, job_category = selection.split(".")
+            # puts "You've selected the category" + "#{selection.category_name}!".colorize(:red)
+            # JobSearch::Scraper.scrape_category_for_job_links(selection.link) #scrape this
 
-                if selection.include?(input)
-                    puts "You've selected the category" + "#{job_category}!".colorize(:red)
-                    sleep(2)
-                    category_link = JobSearch::Job.all_links[i - 1] #scrape this link
-                    JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
-                end
+            # if (1..@@categories_to_display.size).include?(input.to_i)
+            #     number, job_category = selection.split(".")
 
-            else
-                puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
-                puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
-                puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
+            #     if selection.include?(input)
+            #         puts "You've selected the category" + "#{job_category}!".colorize(:red)
+            #         sleep(2)
+            #         category_link = JobSearch::Job.all_links[i - 1] #scrape this link
+            #         JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
+            #     end
 
-                user_category_selection
-            end
+            # else
+            #     puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
+            #     puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
+            #     puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
+
+            #     user_category_selection
+            # end
         end
     end
 

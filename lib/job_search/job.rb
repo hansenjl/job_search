@@ -5,11 +5,11 @@ require 'colorize'
 require_relative 'version'
 
 class JobSearch::Job
-    @@all = [] #holds all instances of a job
-    @@all_categories = []
-    @@all_links = []
-    @@all_jobs = []
-    @@all_job_links = []
+    @@all = []
+    # @@all_categories = []
+    # @@all_links = []
+    # @@all_jobs = []
+    # @@all_job_links = []
 
     attr_accessor :title, :date, :compensation, :employment_type, :body, :link, :category
     def initialize(title = nil, compensation = nil, employment_type = nil, body = nil)
@@ -39,9 +39,9 @@ class JobSearch::Job
         @@all_links
     end
 
-    def self.all_categories
-        @@all_categories
-    end
+    # def self.all_categories
+    #     @@all_categories
+    # end
 
     def self.all_jobs
         @@all_jobs
