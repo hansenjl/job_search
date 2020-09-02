@@ -29,7 +29,7 @@ Or install it yourself as:
 Execute the following below in your terminal and follow the prompts:
 
 ```
-    $ job_search
+$ job_search
 ```
 ## Development
 

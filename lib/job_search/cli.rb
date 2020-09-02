@@ -1,7 +1,7 @@
-require 'nokogiri'
-require 'open-uri'
-require 'pry'
-require 'colorize'
+# require 'nokogiri'
+# require 'open-uri'
+# require 'pry'
+# require 'colorize'
 require_relative 'version'
 
 class JobSearch::CLI 
@@ -34,18 +34,22 @@ class JobSearch::CLI
     def create_and_display_categories
         categories = JobSearch::Scraper.scrape_site #store site data in categories variable
 
-        categories.collect.with_index(1) do |category, i|
-            category = category.attr('href').split("d/").last.split("/").first
+        # categories.collect.with_index(1) do |category, i|
+        #     category = category.attr('href').split("d/").last.split("/").first
 
-            puts "#{i}. #{category}"
-            @@categories_to_display << "#{i}. #{category}"
+        #     puts "#{i}. #{category}"
+        #     @@categories_to_display << "#{i}. #{category}"
+        # end
+
+        JobSearch::Job.all_categories.each do |category|
+            puts category
         end
     end   
 
     def user_category_selection
         input = gets.strip
 
-        @@categories_to_display.find.with_index(1) do |selection, i|
+        JobSearch::Job.all_categories.find.with_index(1) do |selection, i|
             
             if (1..@@categories_to_display.size).include?(input.to_i)
                 number, job_category = selection.split(".")
@@ -102,6 +106,7 @@ class JobSearch::CLI
 
     def explore_the_job
         job = JobSearch::Job.all.last
+        
         puts "What information would you like to know about the job you selected?".colorize(:yellow)
         puts "Enter 'title' or '1' for job title.".colorize(:yellow)
         puts "Enter 'details' or '2' for job details.".colorize(:yellow)
@@ -127,6 +132,7 @@ class JobSearch::CLI
             puts "Please select one of the inputs mentioned above.".upcase.colorize(:red)
         end
         sleep(2)
+
         explore_the_job unless input == 'done'
     end
 
