@@ -22,7 +22,6 @@ class JobSearch::Scraper
         doc = Nokogiri::HTML(open(category_link))
 
         doc.search('.rows .result-info a').each do |row|
-            # binding.pry
             job_link = row.attr('href')
             JobSearch::Category.jobs << job_link unless job_link == '#'
         end
@@ -40,7 +39,7 @@ class JobSearch::Scraper
         year, month, date_time = date.split('-')
         day, time = date_time.split(" ") 
         date = "#{month}-#{day}-#{year} at #{time}."
-
+        
         JobSearch::Job.new(
             doc.search('.postingtitletext #titletextonly').text.strip, #title
             pay, #compensation

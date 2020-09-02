@@ -1,7 +1,3 @@
-require 'nokogiri'
-require 'open-uri'
-require 'pry'
-require 'colorize'
 require_relative 'version'
 
 class JobSearch::Job
@@ -31,7 +27,7 @@ class JobSearch::Job
         @@all
     end
 
-    def self.destroy_all
+    def self.destroy
         @@all.clear
     end
 end

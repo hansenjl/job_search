@@ -5,9 +5,6 @@
 require_relative 'version'
 
 class JobSearch::CLI 
-    @@categories_to_display = [] 
-    @@jobs_within_category = []
-    @@jobs_to_print = []
 
     def program_run
         greeting
@@ -40,6 +37,8 @@ class JobSearch::CLI
 
         if  (1..JobSearch::Category.all.size).include?(input.to_i)
             puts "You've selected the category " + "#{JobSearch::Category.all[input.to_i - 1].category_name}!".colorize(:red)
+            
+            sleep(2)
             JobSearch::Scraper.scrape_category_for_job_links(JobSearch::Category.all[input.to_i - 1].link) #scrape this
         else
             puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
@@ -60,19 +59,15 @@ class JobSearch::CLI
 
     def user_job_selection
         input = gets.strip.downcase
-        binding.pry
-        @@jobs_within_category.find.with_index(1) do |job, i|
-            if (1..@@jobs_within_category.size).include?(input.to_i)
-                if i.to_s == input 
-                    puts "You've selected option number #{i}, for #{@@jobs_to_print[i - 1]}!".colorize(:green)
-                    puts "Here is the job link if you'd like to view the job page: " + "#{job}".colorize(:light_blue)
-                    sleep(3)
-                    JobSearch::Scraper.scrape_job_link(job)
-                end
-            else
-                puts "Sorry, that's not valid input. Please try again.".upcase.colorize(:red)
-                user_job_selection
-            end
+
+        if (1..JobSearch::Category.jobs.size).include?(input.to_i) 
+            puts "Here is the job link if you'd like to view the job page: " + "#{JobSearch::Category.jobs[input.to_i - 1]}".colorize(:light_blue)
+            sleep(2)
+            JobSearch::Scraper.scrape_job_link(JobSearch::Category.jobs[input.to_i - 1])
+            JobSearch::Job.all[0].category = JobSearch::Category.all[0]
+        else
+            puts "Sorry, that's not valid input. Please try again.".upcase.colorize(:red)
+            user_job_selection
         end
     end
 
@@ -127,9 +122,7 @@ class JobSearch::CLI
     end
 
     def self.reset_program
-        @@categories_to_display = [] 
-        @@jobs_within_category = []
-        @@jobs_to_print = []
-        JobSearch::Job.destroy_all
+        JobSearch::Job.destroy
+        JobSearch::Category.destroy_all
     end
 end
