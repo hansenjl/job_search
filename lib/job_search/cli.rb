@@ -14,7 +14,6 @@ class JobSearch::CLI
         create_and_display_categories
         user_category_selection 
         create_and_display_all_job_listings
-        print_job_listings
         user_job_selection 
         explore_the_job 
         view_another_job_or_category?
@@ -38,51 +37,30 @@ class JobSearch::CLI
 
     def user_category_selection
         input = gets.strip
-        # binding.pry
-        JobSearch::Category.all.find.with_index(1) do |selection, i|
-            JobSearch::Scraper.scrape_category_for_job_links(JobSearch::Category.all[input.to_i + 1].link) #scrape this
-            
-            # puts "You've selected the category" + "#{selection.category_name}!".colorize(:red)
-            # JobSearch::Scraper.scrape_category_for_job_links(selection.link) #scrape this
 
-            # if (1..@@categories_to_display.size).include?(input.to_i)
-            #     number, job_category = selection.split(".")
+        if  (1..JobSearch::Category.all.size).include?(input.to_i)
+            puts "You've selected the category " + "#{JobSearch::Category.all[input.to_i - 1].category_name}!".colorize(:red)
+            JobSearch::Scraper.scrape_category_for_job_links(JobSearch::Category.all[input.to_i - 1].link) #scrape this
+        else
+            puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
+            puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
+            puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
 
-            #     if selection.include?(input)
-            #         puts "You've selected the category" + "#{job_category}!".colorize(:red)
-            #         sleep(2)
-            #         category_link = JobSearch::Job.all_links[i - 1] #scrape this link
-            #         JobSearch::Scraper.scrape_category_for_job_links(category_link) #scrape this
-            #     end
-
-            # else
-            #     puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
-            #     puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
-            #     puts "For example, enter '1' for 'accounting-finance' job information.".colorize(:yellow)
-
-            #     user_category_selection
-            # end
+            user_category_selection
         end
     end
 
     def create_and_display_all_job_listings
         puts "Which job would you like more information on?".colorize(:green)
-
-        JobSearch::Job.all_job_links.each { |link| @@jobs_within_category << "#{link}" }
-
         puts "Available jobs in this category:".colorize(:blue)
         puts "--------------------------------"
 
-        @@jobs_within_category.each { |j| @@jobs_to_print << j.split("/d/").last.split('/').first }
-    end
-
-    def print_job_listings
-        @@jobs_to_print.each.with_index(1) { |job, i| puts "#{i}." + "#{job}".colorize(:red) }
+        JobSearch::Category.jobs.each.with_index(1) { |j, index| puts "#{index}. #{j.split("/d/").last.split('/').first}" }
     end
 
     def user_job_selection
         input = gets.strip.downcase
-        
+        binding.pry
         @@jobs_within_category.find.with_index(1) do |job, i|
             if (1..@@jobs_within_category.size).include?(input.to_i)
                 if i.to_s == input 
