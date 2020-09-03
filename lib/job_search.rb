@@ -1,5 +1,7 @@
 require "nokogiri"
 require 'pry'
+require 'colorize'
+require 'open-uri'
 
 require "job_search/version"
 require "job_search/cli"

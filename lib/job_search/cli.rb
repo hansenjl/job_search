@@ -2,17 +2,22 @@
 # require 'open-uri'
 # require 'pry'
 # require 'colorize'
-require_relative 'version'
 
-class JobSearch::CLI 
+
+class JobSearch::CLI
+
+    def start
+        JobSearch::Scraper.scrape_site  #make sure you only scrape categories one time
+        program_run
+    end
 
     def program_run
         greeting
         create_and_display_categories
-        user_category_selection 
+        user_category_selection
         create_and_display_all_job_listings
-        user_job_selection 
-        explore_the_job 
+        user_job_selection
+        explore_the_job
         view_another_job_or_category?
     end
 
@@ -28,18 +33,21 @@ class JobSearch::CLI
     end
 
     def create_and_display_categories
-        categories = JobSearch::Scraper.scrape_site #store site data in categories variable
+        #store site data in categories variable
         JobSearch::Category.all.each.with_index(1) {|category, index| puts "#{index}. #{category.category_name}"}
-    end   
+    end
 
     def user_category_selection
         input = gets.strip
 
         if  (1..JobSearch::Category.all.size).include?(input.to_i)
-            puts "You've selected the category " + "#{JobSearch::Category.all[input.to_i - 1].category_name}!".colorize(:red)
-            
+            @category = JobSearch::Category.all[input.to_i - 1]  #now you can reference this category elsewhere in the CLI
+            puts "You've selected the category " + "#{@category.category_name}!".colorize(:red)
+
             sleep(2)
-            JobSearch::Scraper.scrape_category_for_job_links(JobSearch::Category.all[input.to_i - 1].link) #scrape this
+            if @category.jobs.empty?  #if we haven't already scraped the jobs for this category
+                JobSearch::Scraper.scrape_category_for_job_links(@category) #scrape this
+            end
         else
             puts "Sorry, that's not valid input, please try again.".upcase.colorize(:red)
             puts "Choose the corresponding number from the list to get more information.".colorize(:yellow)
@@ -54,17 +62,17 @@ class JobSearch::CLI
         puts "Available jobs in this category:".colorize(:blue)
         puts "--------------------------------"
 
-        JobSearch::Category.jobs.each.with_index(1) { |j, index| puts "#{index}. #{j.split("/d/").last.split('/').first}" }
+        @category.jobs.each.with_index(1) { |j, index| puts "#{index}. #{j.title}" }
     end
 
     def user_job_selection
         input = gets.strip.downcase
 
-        if (1..JobSearch::Category.jobs.size).include?(input.to_i) 
-            puts "Here is the job link if you'd like to view the job page: " + "#{JobSearch::Category.jobs[input.to_i - 1]}".colorize(:light_blue)
+        if (1..@category.jobs.size).include?(input.to_i)
+            @job = @category.jobs[input.to_i - 1]
+            puts "Here is the job link if you'd like to view the job page: " + "#{@job.title}".colorize(:light_blue)
             sleep(2)
-            JobSearch::Scraper.scrape_job_link(JobSearch::Category.jobs[input.to_i - 1])
-            JobSearch::Job.all[0].category = JobSearch::Category.all[0]
+            JobSearch::Scraper.scrape_job_link(@job)
         else
             puts "Sorry, that's not valid input. Please try again.".upcase.colorize(:red)
             user_job_selection
@@ -72,8 +80,6 @@ class JobSearch::CLI
     end
 
     def explore_the_job
-        job = JobSearch::Job.all.last
-        
         puts "What information would you like to know about the job you selected?".colorize(:yellow)
         puts "Enter 'title' or '1' for job title.".colorize(:yellow)
         puts "Enter 'details' or '2' for job details.".colorize(:yellow)
@@ -84,18 +90,18 @@ class JobSearch::CLI
 
         input = gets.strip.downcase
         if input == '1' || input == 'title'
-            puts "#{job.title}".colorize(:green)
+            puts "#{@job.title}".colorize(:green)
         elsif input == '2' || input == 'details'
-            puts "#{job.body}".colorize(:green)
+            puts "#{@job.body}".colorize(:green)
         elsif input == '3' || input == 'job type'
-            puts "#{job.employment_type}".colorize(:green)
+            puts "#{@job.employment_type}".colorize(:green)
         elsif input == '4' || input == 'pay'
-            puts "#{job.compensation}".colorize(:green)
+            puts "#{@job.compensation}".colorize(:green)
         elsif input == '5' || input == 'overall'
-            puts "#{job.descriptor}".colorize(:green)
+            puts "#{@job.descriptor}".colorize(:green)
         elsif input == 'done'
             puts "All finished with this job?".colorize(:yellow)
-        else 
+        else
             puts "Please select one of the inputs mentioned above.".upcase.colorize(:red)
         end
         sleep(2)
@@ -109,7 +115,7 @@ class JobSearch::CLI
         puts "Type 'exit' to end the program"
 
         input = gets.strip.downcase
-        
+
         if input == 'yes'
             JobSearch::CLI.reset_program
             program_run #start program again
@@ -122,7 +128,7 @@ class JobSearch::CLI
     end
 
     def self.reset_program
-        JobSearch::Job.destroy
-        JobSearch::Category.destroy_all
+        @job = nil
+        @category = nil
     end
 end

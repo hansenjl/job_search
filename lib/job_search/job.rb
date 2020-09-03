@@ -2,17 +2,14 @@ require_relative 'version'
 
 class JobSearch::Job
     @@all = []
-    
-    attr_accessor :title, :date, :compensation, :employment_type, :body, :link, :category
-    def initialize(title = nil, compensation = nil, employment_type = nil, body = nil)
-        @title = title
-        @date = date
-        @compensation = compensation 
-        @employment_type = employment_type
-        @body = body
-        @category = category
 
-        @@all << self 
+    attr_accessor :title, :date, :compensation, :employment_type, :body, :link, :category
+    # def initialize(title = nil, compensation = nil, employment_type = nil, body = nil)
+    def initialize(category, link, title)
+        @title = title
+        @category = category
+        @link = link
+        @@all << self
     end
 
     def descriptor

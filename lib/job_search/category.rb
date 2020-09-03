@@ -1,21 +1,20 @@
 class JobSearch::Category
-    
+
     @@all = [] #all categories
-    @@jobs = [] #all job link from a category
+
 
     attr_accessor :category_name, :link, :jobs
 
     def initialize(category_name, link)
         @category_name = category_name
         @link = link
-
         @@all << self
     end
 
-    #returns the jobs that were scraped based on selection
-    #a category has many jobs
-    def self.jobs
-        @@jobs
+    def jobs  #select the jobs that belong to this instance of a category
+        JobSearch::Job.all.select do |job|
+            job.category == self
+        end
     end
 
     #will hold all the categories scraped based on user selection
@@ -25,7 +24,6 @@ class JobSearch::Category
 
     def self.destroy_all
         @@all.clear
-        @@jobs.clear
     end
 
 end
